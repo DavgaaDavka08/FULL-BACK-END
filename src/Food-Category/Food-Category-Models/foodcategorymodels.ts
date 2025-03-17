@@ -12,7 +12,7 @@ const Foods: Schema = new Schema(
     FoodName: { type: String, required: true },
     price: { type: Number, require: true },
     image: { type: String, require: true },
-    ingredients: { type: Number, require: true },
+    ingredients: { type: String, require: true },
     category: { type: Object, rel: "FoodCategory", require: true },
   },
   { timestamps: true }

@@ -7,6 +7,7 @@ export const addFood = async (req: Request, res: Response) => {
 
     res.status(200).json({ massage: "amjilttai ", addfood });
   } catch (error) {
+    console.log(error);
     res.status(400).json({ massage: "hool nemhed aldaa garlaa" });
   }
 };
@@ -25,7 +26,8 @@ export const deleteFood = async (
   try {
     const deleteId = req.params.id;
 
-    const deletedUser = await Foods.findByIdAndDelete(deleteId);
+    const deletedUser = await Foods.deleteMany();
+    // const deletedUser = await Foods.findByIdAndDelete(deleteId);
 
     if (!deletedUser) {
       res.status(404).json({ message: "Хэрэглэгч олдсонгүй!" });

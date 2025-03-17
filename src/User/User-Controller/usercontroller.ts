@@ -1,49 +1,59 @@
 import { Request, Response } from "express";
 import User from "../User-models/user-models";
-export const addUser = async (req: Request, res: Response): Promise<void> => {
+import { compareSync } from "bcryptjs";
+
+export const signIn = async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body;
-    const checkEmail = await User.findOne({ email });
-    if (!checkEmail) {
-      res.status(404).json({ massage: "hereglegch email burtgeltei baina" });
+    const { password, email } = req.body;
+    console.log(" password:>> ", password);
+    console.log("email :>> ", email);
+    if (!email || !password) {
+      res.status(400).json({ message: "email nuuts ug oruul" });
+      return;
     }
-    const newUser = new User({ name, email, password });
-    await newUser.save();
-    res.status(200).json({ massage: "amjilttai hereglegch burtgelee" });
-  } catch (error) {
-    res.status(400).json({ massage: "hereglegch burtgej chadsangui" });
-  }
-};
-export const getUser = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const userId = req.params.id;
-    const user = await User.findById(userId);
+    const user = await User.findOne({ email });
+    console.log("user :>> ", user);
     if (!user) {
-      res.status(404).json({ message: "Хэрэглэгч олдсонгүй!" });
+      res.status(404).json({ message: "hereglegch burtgelgui baina" });
+      return;
     }
-    res.status(200).json({ user });
+    if (!user.password) {
+      res.status(500).json({ message: "nuuts ug oldsongui" });
+      return;
+    }
+    const isCorrect = password == user.password;
+    console.log(user.password);
+    console.log(password);
+    if (!isCorrect) {
+      res.status(401).json({ message: "nuuts ui buruu baina" });
+      return;
+    }
+    res.status(200).json({ message: "succses signUp" });
   } catch (error) {
-    res.status(400).json({ massage: "hadgalhad aldaa garlaa" });
+    res.status(500).json({ message: "newtrehed aldaa garlaa" });
   }
 };
+
 export const deleteUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
     const userId = req.params.id;
-    const deleteUser = await User.findByIdAndDelete(userId);
-    if (!deleteUser) {
-      res.status(404).json({ message: "Хэрэглэгч олдсонгүй!" });
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      res.status(404).json({ message: "oldsongui" });
+      return;
     }
-    res
-      .status(200)
-      .json({ message: "Хэрэглэгч амжилттай устгагдлаа!", user: deleteUser });
+
+    res.status(200).json({ message: "amjilttai ustgalaa", user: deletedUser });
   } catch (error) {
-    res.status(400).json({ massaage: "ustgahad aldaa garlaa" });
+    res.status(400).json({ message: "error in delete" });
   }
 };
-export const UpdateUser = async (
+
+export const updateUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -51,22 +61,18 @@ export const UpdateUser = async (
     const userId = req.params.id;
     const { name, email, password } = req.body;
 
-    const updateuser = await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       userId,
-      {
-        name,
-        email,
-        password,
-      },
+      { name, email, password },
       { new: true }
     );
-    if (!updateuser) {
-      res.status(404).json({ massage: "hereglegch oldsongui" });
+
+    if (!updatedUser) {
+      res.status(404).json({ message: "Хэрэглэгч oldsongui" });
+      return;
     }
-    res
-      .status(200)
-      .json({ massage: "hereglegch amjilttai shinchillee", updateuser });
+    res.status(200).json({ message: "shinechllee", updatedUser });
   } catch (error) {
-    res.status(400).json({ massaage: "oorchlohod aldaa garlaa" });
+    res.status(500).json({ message: "error in update" });
   }
 };
