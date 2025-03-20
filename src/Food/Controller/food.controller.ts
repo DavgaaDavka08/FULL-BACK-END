@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Foods from "../Food-Category-Models/foodcategorymodels";
+import Foods from "../Models/food.models";
 export const addFood = async (req: Request, res: Response) => {
   try {
     const connectFood = req.body;

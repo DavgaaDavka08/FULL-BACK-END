@@ -17,6 +17,10 @@ export const SignUp = async (req: Request, res: Response): Promise<void> => {
     }
     const hashedPassword = hashSync(password, 10);
     console.log("nuuuts ug ", hashedPassword);
+    if (!hashedPassword) {
+      res.status(401).json({ message: "nuuts ug buruu baina" });
+      return;
+    }
     const newUser = new User({
       email,
       password: hashedPassword,

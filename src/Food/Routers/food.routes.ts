@@ -4,7 +4,7 @@ import {
   deleteFood,
   getFood,
   updateFood,
-} from "../Food-category-Controller/foodcategorycontroller";
+} from "../Controller/food.controller";
 const route = express.Router();
 route.post("/", addFood);
 route.get("/", getFood);
