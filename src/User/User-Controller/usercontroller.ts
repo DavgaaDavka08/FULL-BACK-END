@@ -21,7 +21,7 @@ export const signIn = async (req: Request, res: Response) => {
       res.status(500).json({ message: "nuuts ug oldsongui" });
       return;
     }
-    const isCorrect = password == user.password;
+    const isCorrect = compareSync(password, user.password);
     console.log(user.password);
     console.log(password);
     if (!isCorrect) {

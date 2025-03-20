@@ -6,6 +6,8 @@ export const SignUp = async (req: Request, res: Response): Promise<void> => {
   try {
     const { password, email } = req.body;
 
+    console.log(password, email);
+
     if (!email || !password) {
       res.status(404).json({ message: "email nuust ug" });
       return;
