@@ -11,12 +11,18 @@ export const addFood = async (req: Request, res: Response) => {
     res.status(400).json({ massage: "hool nemhed aldaa garlaa" });
   }
 };
-export const getFood = async (req: Request, res: Response) => {
+export const getFood = async (req: Request, res: Response): Promise<void> => {
   try {
-    const getfood = await Foods.find();
-    res.status(200).json({ massage: "amjilttai ", getfood });
+    const getfood = await Foods.find().populate("category");
+
+    if (!getfood || getfood.length === 0) {
+      res.status(404).json({ message: "Хоол олдсонгүй" });
+    }
+
+    res.status(200).json({ message: "Амжилттай!", getfood });
   } catch (error) {
-    res.status(400).json({ massagee: "nemhed aldaa" });
+    console.error("Хоол авахад алдаа гарлаа:", error);
+    res.status(400).json({ message: "Хадгалах үед алдаа гарлаа", error });
   }
 };
 export const deleteFood = async (
